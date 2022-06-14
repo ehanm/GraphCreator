@@ -1,9 +1,19 @@
 #include <iostream>
 #include <cstring>
+#include <vector>
+#include <fstream>
+#include <cmath>
+#include <map>
+#include <stdlib.h>
 #include "vertex.h"
 #include "edge.h"
 
 using namespace std;
+
+vector<vertex*> vertices; // vectors to hold both vectors and edges
+vector<edge*> edges;
+void vertexadd(char label);
+void edgeadd(char firstlabel, char secondlabel, int value);
 
 int main() {
 
@@ -43,7 +53,7 @@ int main() {
 
 	cin >> inputnum;
 
-	// add edge and with 2 labels and value
+        edgeadd(inputchar, inputchar2, inputnum);
 	
       }
 
@@ -53,8 +63,7 @@ int main() {
 
 	cin >> inputchar;
 
-	// add vertex with inputchar
-	
+	vertexadd(inputchar);
 
       }
       
@@ -100,19 +109,122 @@ int main() {
 
     else if (strcmp(input, "QUIT") == 0){
 
-      cout << "Goodbye!" << endl;
       whilerunning = false;
       break;
 
     }
 
     
-    
-
+  
   }
   
+
+}
+
+void vertexadd(char label){
+
+  vertex* temp = new vertex();
+  temp->label = label;
+  bool check = false;
+  vector<vertex*>::iterator v;
+
+  for (v = vertices.begin(); v != vertices.end(); v++){ // checking if the vertex already exists
+
+    if ((*v)->label == label){
+      check = true;
+    }
+
+  }
+
+  if (check != true){
+
+    vertices.push_back(temp);
+    cout << "Vertex added!" << endl;
+
+  }
+
+  else {
+
+    cout << "Can't make a duplicate vertex!" << endl;
+
+  }
+
+  return;
+
+
+}
+
+void edgeadd(char firstlabel, char secondlabel, int value){
+
+  edge* temp = new edge();
+  vertex* first = NULL;
+  vertex* second = NULL;
+  bool check = false;
+  vector<vertex*>::iterator v;
+  vector<edge*>::iterator e;
   
+  for (v = vertices.begin(); v != vertices.end(); v++){ // first and second vertices
 
+    if ((*v)->label == firstlabel){
 
+      first = *v;
+      
+    }
 
+    if ((*v)->label == secondlabel){
+
+      second = *v;
+
+    }
+    
+  }
+
+  if (first == NULL && second == NULL){
+
+    cout << "neither labels found." << endl;
+    return;
+
+  }
+
+  if (first == second) { // stops user from making an edge between a vertex and itself
+
+    cout << "You can't connect a vertex to itself!" << endl;
+    return;
+
+  }
+
+  for (e = edges.begin(); e != edges.end(); e++) {
+
+    if (((*e)->first == first && (*e)->second == second)){
+
+      check = true;
+
+    }
+  }
+
+  if (first != NULL && second != NULL && check != true){
+
+    temp->first = first;
+    temp->second = second;
+    temp->value = value;
+    edges.push_back(temp);
+
+    cout << "edge connected!" << endl;
+
+  }
+
+  else if (first != NULL && second != NULL && check == true){
+
+    cout << "an edge connecting these vertices already exists." << endl;
+
+  }
+
+  else {
+
+    cout << "One or both of the vertices don't exist" << endl;
+
+  }
+
+  return;
+  
 }
