@@ -14,6 +14,9 @@ vector<vertex*> vertices; // vectors to hold both vectors and edges
 vector<edge*> edges;
 void vertexadd(char label);
 void edgeadd(char firstlabel, char secondlabel, int value);
+void vertexremove(char label);
+void edgeremove(char first, char second, bool check);
+void printfunction();
 
 int main() {
 
@@ -29,7 +32,7 @@ int main() {
   
   while (whilerunning == true){
 
-    cout << "What would you like to do? (ADD, DELETE, PATH, PRINT, QUIT)" << endl;
+    cout << "What would you like to do? (ADD, DELETE, PRINT, QUIT)" << endl;
 
     cin >> input;
 
@@ -85,8 +88,8 @@ int main() {
 
 	cin >> inputchar2;
 
-	// delete edge with first and second label
-
+	edgeremove(inputchar, inputchar2, true);
+	
       }
 
       else if (strcmp(input, "VERTEX") == 0){
@@ -95,16 +98,15 @@ int main() {
 
 	cin >> inputchar;
 
-	// delete vertext with label
-	
+	vertexremove(inputchar);
       }
       
     }
 
     else if (strcmp(input, "PRINT") == 0){
 
-      cout << "print function" << endl;
-
+      printfunction();
+      
     }
 
     else if (strcmp(input, "QUIT") == 0){
@@ -227,4 +229,215 @@ void edgeadd(char firstlabel, char secondlabel, int value){
 
   return;
   
+}
+
+void vertexremove(char label) {
+
+  vector<vertex*>::iterator v;
+  vector<edge*>::iterator e;
+  bool hasedge = false;
+  char input[100];
+
+  if (vertices.empty() == true){
+
+    cout << "No vertices to delete!" << endl;
+    return;
+    
+  }
+
+  for (v = vertices.begin(); v != vertices.end(); v++){
+
+    if ((*v)->label == label){
+      for (e = edges.begin(); e != edges.end(); e++){
+
+	if ((*e)->first == *v || (*e)->second == *v){
+	  hasedge = true;
+	}
+
+      }
+      if (hasedge == true){
+
+	cout << "This vertex contains an edge. Remove? (YES/NO)" << endl;
+	cin >> input;
+
+	if (strcmp(input, "YES") == 0) {
+
+	  bool stillrunning = false;
+	  while (stillrunning == true){
+
+	    for (e = edges.begin(); e != edges.end(); e++){
+
+	      if (e == edges.end() - 1){
+
+	        stillrunning = true;
+		
+	      }
+
+	      if ((*e)->first == *v || (*e)->second == *v){
+
+		edgeremove((*e)->first->label, (*e)->second->label, false);
+		edgeremove((*e)->second->label, (*e)->first->label, false);
+		break;
+
+	      }
+	      
+	    }
+
+	  }
+
+	  vertices.erase(v);
+	  cout << "vertex removed" << endl;
+	  return;
+
+	}
+
+	else {
+
+	  cout << "vertex no removed" << endl;
+	  return;
+
+	}
+
+      }
+
+      else {
+
+	vertices.erase(v);
+	cout << "vertex removed" << endl;
+	return;
+
+      }
+
+    }
+    
+  }
+
+}
+
+void edgeremove(char first, char second, bool check){
+
+  vertex* firsttemp = NULL;
+  vertex* secondtemp = NULL;
+  vector<vertex*>::iterator v;
+  vector<edge*>::iterator e;
+  
+  if (edges.empty() == true){
+
+    if (check == true){
+
+      cout << "No edges" << endl;
+
+    }
+    return;
+    
+  }
+
+  for (v = vertices.begin(); v != vertices.end(); v++){
+    if ((*v)->label == first){
+
+      firsttemp = *v;
+      
+    }
+    if ((*v)->label == second){
+
+      secondtemp = *v;
+
+    }
+  }
+
+  if (firsttemp == NULL || secondtemp == NULL) {
+
+    cout << "One or both of vertexes not in existance" << endl;
+    return;
+    
+  }
+
+  if (firsttemp == secondtemp) {
+
+    cout << "vertex can't be connected to itself!" << endl;
+    return;
+
+  }
+
+  for (e = edges.begin(); e != edges.end(); e++) {
+
+    if (((*e)->first == firsttemp && (*e)->second == secondtemp)){
+
+      edges.erase(e);
+      if (check == true){
+	cout << "edge removed" << endl;
+      }
+      return;
+
+    }
+  }
+
+  if (firsttemp != NULL && secondtemp != NULL && check == true){
+
+    cout << "This edge does not exist" << endl;
+    
+  }
+  else {
+
+    if (check == true){
+
+      cout << "edge removed" << endl;
+
+    }
+    return;
+    
+  }
+
+  return;
+
+}
+
+void printfunction(){
+
+  if (vertices.empty()) {
+    cout << "There are no vertices." << endl;
+    return;
+  }
+  
+  cout << "\t";
+  vector<vertex*>::iterator v;
+
+  for (v = vertices.begin(); v != vertices.end(); v++) {
+    cout << (*v)->label << "\t";
+  }
+  cout << endl;
+
+  vector<vertex*>::iterator v2;
+  vector<edge*>::iterator e; 
+
+  for (v = vertices.begin(); v != vertices.end(); v++) {
+    cout << (*v)->label << "\t";
+
+    for (v2 = vertices.begin(); v2 != vertices.end(); v2++) {
+      bool connection = false;
+      if (v2 == v) {
+	cout << "n/a";
+	connection = true;
+      }
+      else {
+	for (e = edges.begin(); e != edges.end(); e++) {
+	  if ((*e)->first == *v) {
+	    if ((*e)->second == *v2) {
+	      cout << (*e)->value;
+	      connection = true;
+	    }
+	  }
+	}
+      }
+      
+      if (connection != true){
+	cout << "none";
+      }
+      
+      cout << "\t";
+    }
+    cout << endl;
+  }
+
+
 }
