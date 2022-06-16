@@ -92,7 +92,7 @@ int main() {
 	
       }
 
-      else if (strcmp(input, "VERTEX") == 0){
+      else if (strcmp(input2, "VERTEX") == 0){
 
 	cout << "What is the label of the vertex?" << endl;
 
@@ -238,7 +238,7 @@ void vertexremove(char label) {
   bool hasedge = false;
   char input[100];
 
-  if (vertices.empty() == true){
+  if (vertices.empty() == true){ // if no vertexes exist
 
     cout << "No vertices to delete!" << endl;
     return;
@@ -275,7 +275,7 @@ void vertexremove(char label) {
 
 	      if ((*e)->first == *v || (*e)->second == *v){
 
-		edgeremove((*e)->first->label, (*e)->second->label, false);
+		edgeremove((*e)->first->label, (*e)->second->label, false); // deletes any existing edges too
 		edgeremove((*e)->second->label, (*e)->first->label, false);
 		break;
 
@@ -321,7 +321,7 @@ void edgeremove(char first, char second, bool check){
   vector<vertex*>::iterator v;
   vector<edge*>::iterator e;
   
-  if (edges.empty() == true){
+  if (edges.empty() == true){ // if no edges
 
     if (check == true){
 
@@ -347,14 +347,14 @@ void edgeremove(char first, char second, bool check){
 
   if (firsttemp == NULL || secondtemp == NULL) {
 
-    cout << "One or both of vertexes not in existance" << endl;
+    cout << "One or both of vertexes not in existance" << endl; // ensures user doesn't enter some NULL vertex
     return;
     
   }
 
   if (firsttemp == secondtemp) {
 
-    cout << "vertex can't be connected to itself!" << endl;
+    cout << "vertex can't be connected to itself!" << endl; // ensures user can't enter the same vertex twice
     return;
 
   }
@@ -402,7 +402,7 @@ void printfunction(){
   cout << "\t";
   vector<vertex*>::iterator v;
 
-  for (v = vertices.begin(); v != vertices.end(); v++) {
+  for (v = vertices.begin(); v != vertices.end(); v++) { // prints vertices on top row
     cout << (*v)->label << "\t";
   }
   cout << endl;
@@ -410,7 +410,7 @@ void printfunction(){
   vector<vertex*>::iterator v2;
   vector<edge*>::iterator e; 
 
-  for (v = vertices.begin(); v != vertices.end(); v++) {
+  for (v = vertices.begin(); v != vertices.end(); v++) { // prints vertices on the left side
     cout << (*v)->label << "\t";
 
     for (v2 = vertices.begin(); v2 != vertices.end(); v2++) {
@@ -430,7 +430,7 @@ void printfunction(){
 	}
       }
       
-      if (connection != true){
+      if (connection != true){ // if the 2 vertexes are able to be connected but no connection exists
 	cout << "none";
       }
       
