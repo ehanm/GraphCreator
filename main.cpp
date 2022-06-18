@@ -1,3 +1,6 @@
+// This is a program that develops a graph involving edges and vertexes.
+// Things to add: algorithm
+
 #include <iostream>
 #include <cstring>
 #include <vector>
